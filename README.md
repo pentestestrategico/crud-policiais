@@ -110,3 +110,11 @@ Contribuindo
 
 Licença
 - ISC
+
+Imagens
+------
+Screenshots e imagens de exemplo do projeto (armazenadas em `assets/`). Se você fez upload das imagens para `assets/`, elas serão exibidas abaixo:
+
+![Imagem 1](./assets/imagem1.png)
+
+![Imagem 2](./assets/imagem2.png)

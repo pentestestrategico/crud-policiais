@@ -1,6 +1,7 @@
+-- Script para criar banco e tabela utilizados pelo backend
 CREATE DATABASE seguranca;
 USE seguranca;
--- Criação da tabela policiais
+-- Criação da tabela policiais (matrícula armazenada como VARBINARY)
 CREATE TABLE policiais (
     id INT AUTO_INCREMENT PRIMARY KEY,
     rg_civil VARCHAR(20) NOT NULL UNIQUE,

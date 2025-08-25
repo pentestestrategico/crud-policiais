@@ -1,1 +1,31 @@
-<p>lista-policiais works!</p>
+<div class="card">
+	<h3>Listagem de Policiais</h3>
+	<div>
+		<button (click)="load()">Atualizar</button>
+	</div>
+
+	<div *ngIf="error" style="color:red; margin-top:8px">{{ error }}</div>
+
+	<table *ngIf="policiais?.length">
+		<thead>
+			<tr>
+				<th>RG Civil</th>
+				<th>RG Militar</th>
+				<th>CPF</th>
+				<th>Data Nasc.</th>
+				<th>Matrícula</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let p of policiais">
+				<td data-label="RG Civil">{{ p.rg_civil }}</td>
+				<td data-label="RG Militar">{{ p.rg_militar }}</td>
+				<td data-label="CPF">{{ p.cpf }}</td>
+				<td data-label="Data Nasc.">{{ p.data_nascimento }}</td>
+				<td data-label="Matrícula">{{ p.matricula }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div *ngIf="!policiais?.length" style="margin-top:12px">Nenhum policial encontrado.</div>
+</div>

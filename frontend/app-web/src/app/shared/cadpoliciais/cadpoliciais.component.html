@@ -1,1 +1,32 @@
-<p>cadpoliciais works!</p>
+<div class="card">
+	<h3>Cadastro de Policiais</h3>
+	<form (ngSubmit)="submit()" [formGroup]="form">
+	<div>
+		<label>RG Civil</label>
+		<input formControlName="rg_civil" />
+	</div>
+	<div>
+		<label>RG Militar</label>
+		<input formControlName="rg_militar" />
+	</div>
+	<div>
+		<label>CPF *</label>
+		<input formControlName="cpf" />
+	</div>
+	<div>
+		<label>Data de Nascimento</label>
+		<input type="date" formControlName="data_nascimento" />
+	</div>
+	<div>
+		<label>Matrícula</label>
+		<input formControlName="matricula" />
+	</div>
+
+			<div style="margin-top:8px">
+				<button type="submit">Cadastrar</button>
+			</div>
+		</form>
+
+		<div *ngIf="message" style="color:green; margin-top:8px">{{ message }}</div>
+		<div *ngIf="error" style="color:red; margin-top:8px">{{ error }}</div>
+	</div>

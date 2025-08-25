@@ -1,19 +1,17 @@
-const mysql = require('mysql2/promise')
-require('dotenv').config()
+// Conexão com o banco MySQL usando mysql2/promise
+const mysql = require('mysql2/promise');
+require('dotenv').config();
 
+// Pool de conexões configurado via variáveis de ambiente
 const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '123456',
-    database: 'seguranca'
-})
-//testar conexão
-pool.getConnection()
-.then(conecta => {
-    console.log('conexão com banco de dados bem-sucedida!')
-    conecta.release()//liberar a conexão
-})
-.catch(err => {
-    console.log('Erro ao se conectar ao banco de dados: ', err.message)
-})
-module.exports = pool
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASS || '',
+    database: process.env.DB_NAME || 'seguranca',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
+
+// Exporta o pool para uso pelos controllers
+module.exports = pool;

@@ -1,25 +1,27 @@
+// Servidor Express principal do backend
 const express = require('express');
 const cors = require('cors');
-const authController = require('./authController');
-const authMiddleware = require('./middleware/authMiddleware');
+// Notas: sistema de autenticação removido conforme solicitado
+const policiaisRoutes = require('./routes/policiais');
 
 const app = express();
-const PORT = 3049;
+const PORT = process.env.PORT || 3049;
 
+// Middlewares globais
 app.use(cors());
 app.use(express.json());
 
-app.post('/api/register', authController.register);
-app.post('/api/login', authController.login);
+// Rotas de policiais (em arquivo separado)
+// Nota: autenticação/authorização foi removida — todas as rotas de policiais são públicas neste momento
+app.use('/api/policiais', policiaisRoutes);
 
-app.get('/api/admin', authMiddleware.verifyToken, authMiddleware.verifyPerfil('ADM'), (req, res) => {
-    res.json({ message: 'Bem-vindo, administrador!', user: req.user });
+// Middleware global de tratamento de erros
+app.use((err, req, res, next) => {
+  console.error('Erro não tratado:', err);
+  res.status(err.status || 500).json({ message: err.message || 'Erro interno do servidor' });
 });
 
-app.get('/api/user', authMiddleware.verifyToken, authMiddleware.verifyPerfil('USER'), (req, res) => {
-    res.json({ message: 'Bem-vindo, usuário!', user: req.user });
-});
-
+// Inicia o servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CadpoliciaisComponent } from './shared/cadpoliciais/cadpoliciais.component';
@@ -20,5 +20,10 @@ export class AppComponent {
 
   closeModal() {
     this.showModal = false;
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEsc(e: KeyboardEvent) {
+    if (this.showModal) this.closeModal();
   }
 }

@@ -9,7 +9,7 @@ import { validateCPF } from '../utils/validate-cpf';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './cadpoliciais.component.html',
-  styleUrl: './cadpoliciais.component.css'
+  styleUrls: ['./cadpoliciais.component.css']
 })
 export class CadpoliciaisComponent {
   private fb = inject(FormBuilder);

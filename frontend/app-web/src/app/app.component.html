@@ -15,8 +15,8 @@
 	<router-outlet></router-outlet>
 
 	<!-- Modal -->
-	<div class="modal-backdrop" *ngIf="showModal">
-		<div class="modal card">
+	<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+		<div class="modal card" (click)="$event.stopPropagation()">
 			<header class="modal-header">
 				<h3>Cadastrar Policial</h3>
 				<button class="close" (click)="closeModal()">✕</button>

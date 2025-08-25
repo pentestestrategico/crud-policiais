@@ -21,7 +21,7 @@
 				<td data-label="RG Civil">{{ p.rg_civil }}</td>
 				<td data-label="RG Militar">{{ p.rg_militar }}</td>
 				<td data-label="CPF">{{ p.cpf }}</td>
-				<td data-label="Data Nasc.">{{ p.data_nascimento }}</td>
+			<td data-label="Data Nasc.">{{ p.data_nascimento ? (p.data_nascimento | date:'yyyy-MM-dd') : '' }}</td>
 				<td data-label="Matrícula">{{ p.matricula }}</td>
 			</tr>
 		</tbody>

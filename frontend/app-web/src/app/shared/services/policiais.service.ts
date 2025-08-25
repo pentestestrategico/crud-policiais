@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Policial {
+  id?: number;
   rg_civil?: string;
   rg_militar?: string;
   cpf: string;
@@ -22,5 +23,13 @@ export class PoliciaisService {
 
   listarPoliciais(): Observable<Policial[]> {
   return this.http.get<Policial[]>(`${this.base}/policiais`);
+  }
+
+  updatePolicial(id: number | string, dados: Policial) {
+    return this.http.put(`${this.base}/policiais/${id}`, dados);
+  }
+
+  deletePolicial(id: number | string) {
+    return this.http.delete(`${this.base}/policiais/${id}`);
   }
 }

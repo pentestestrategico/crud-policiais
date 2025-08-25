@@ -4,26 +4,31 @@
 	<div>
 		<label>RG Civil</label>
 		<input formControlName="rg_civil" />
+		<div class="field-error" *ngIf="form.get('rg_civil')?.invalid && form.get('rg_civil')?.touched">RG Civil é obrigatório</div>
 	</div>
 	<div>
 		<label>RG Militar</label>
 		<input formControlName="rg_militar" />
+		<div class="field-error" *ngIf="form.get('rg_militar')?.invalid && form.get('rg_militar')?.touched">RG Militar é obrigatório</div>
 	</div>
 	<div>
 		<label>CPF *</label>
 		<input formControlName="cpf" mask="000.000.000-00" />
+		<div class="field-error" *ngIf="form.get('cpf')?.invalid && form.get('cpf')?.touched">CPF é obrigatório</div>
 	</div>
 	<div>
 		<label>Data de Nascimento</label>
 		<input type="date" formControlName="data_nascimento" />
+		<div class="field-error" *ngIf="form.get('data_nascimento')?.invalid && form.get('data_nascimento')?.touched">Data de Nascimento é obrigatória</div>
 	</div>
 	<div>
 		<label>Matrícula</label>
 		<input formControlName="matricula" />
+		<div class="field-error" *ngIf="form.get('matricula')?.invalid && form.get('matricula')?.touched">Matrícula é obrigatória</div>
 	</div>
 
 			<div style="margin-top:8px">
-				<button type="submit">Cadastrar</button>
+				<button type="submit" [disabled]="form.invalid">Cadastrar</button>
 			</div>
 		</form>
 

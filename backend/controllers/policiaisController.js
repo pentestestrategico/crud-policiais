@@ -92,3 +92,40 @@ exports.list = async (req, res) => {
   }
 };
 
+// Atualiza um policial por id
+exports.update = async (req, res) => {
+  const { id } = req.params;
+  const { rg_civil, rg_militar, cpf, data_nascimento, matricula } = req.body;
+  if (!rg_civil || !rg_militar || !cpf || !data_nascimento || !matricula) {
+    return res.status(400).json({ message: 'Campos obrigatórios ausentes' });
+  }
+
+  if (!validateCPF(cpf)) {
+    return res.status(400).json({ message: 'CPF inválido' });
+  }
+
+  try {
+    const matriculaEnc = encrypt(matricula);
+    await pool.execute(
+      'UPDATE policiais SET rg_civil = ?, rg_militar = ?, cpf = ?, data_nascimento = ?, matricula = ? WHERE id = ?',
+      [rg_civil, rg_militar, cpf, data_nascimento, Buffer.from(matriculaEnc, 'hex'), id]
+    );
+    return res.json({ message: 'Atualizado' });
+  } catch (err) {
+    console.error('Erro ao atualizar policial:', err);
+    return res.status(500).json({ message: 'Erro ao atualizar policial', error: err.message });
+  }
+};
+
+// Remove um policial por id
+exports.remove = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.execute('DELETE FROM policiais WHERE id = ?', [id]);
+    return res.json({ message: 'Removido' });
+  } catch (err) {
+    console.error('Erro ao remover policial:', err);
+    return res.status(500).json({ message: 'Erro ao remover policial', error: err.message });
+  }
+};
+

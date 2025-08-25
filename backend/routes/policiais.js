@@ -8,5 +8,7 @@ const policiaisController = require('../controllers/policiaisController');
 // POST e GET públicos (autenticação removida)
 router.post('/', policiaisController.create);
 router.get('/', policiaisController.list);
+router.put('/:id', policiaisController.update);
+router.delete('/:id', policiaisController.remove);
 
 module.exports = router;

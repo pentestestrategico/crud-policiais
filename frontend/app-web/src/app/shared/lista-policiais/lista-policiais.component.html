@@ -8,21 +8,26 @@
 
 	<table *ngIf="policiais?.length">
 		<thead>
-			<tr>
-				<th>RG Civil</th>
-				<th>RG Militar</th>
-				<th>CPF</th>
-				<th>Data Nasc.</th>
-				<th>Matrícula</th>
-			</tr>
+					<tr>
+						<th>RG Civil</th>
+						<th>RG Militar</th>
+						<th>CPF</th>
+						<th>Data Nasc.</th>
+						<th>Matrícula</th>
+						<th>Ações</th>
+					</tr>
 		</thead>
 		<tbody>
-			<tr *ngFor="let p of policiais">
+					<tr *ngFor="let p of policiais">
 				<td data-label="RG Civil">{{ p.rg_civil }}</td>
 				<td data-label="RG Militar">{{ p.rg_militar }}</td>
-				<td data-label="CPF">{{ p.cpf }}</td>
+				<td data-label="CPF">{{ p.cpf | cpfFormat }}</td>
 			<td data-label="Data Nasc.">{{ p.data_nascimento ? (p.data_nascimento | date:'yyyy-MM-dd') : '' }}</td>
 				<td data-label="Matrícula">{{ p.matricula }}</td>
+						<td data-label="Ações">
+							  <button (click)="editar(p)">Editar</button>
+							  <button (click)="excluir(p.id)" style="margin-left:8px; background:#e11d48">Excluir</button>
+						</td>
 			</tr>
 		</tbody>
 	</table>

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { PoliciaisService } from '../services/policiais.service';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PoliciaisService, Policial } from '../services/policiais.service';
 import { validateCPF } from '../utils/validate-cpf';
 
 @Component({
@@ -16,11 +16,11 @@ export class CadpoliciaisComponent {
   private service = inject(PoliciaisService);
 
   form = this.fb.group({
-    rg_civil: [''],
-    rg_militar: [''],
-    cpf: [''],
-    data_nascimento: [''],
-    matricula: ['']
+    rg_civil: ['', [Validators.required]],
+    rg_militar: ['', [Validators.required]],
+    cpf: ['', [Validators.required]],
+    data_nascimento: ['', [Validators.required]],
+    matricula: ['', [Validators.required]]
   });
 
   message = '';
@@ -29,22 +29,25 @@ export class CadpoliciaisComponent {
   submit() {
     this.message = '';
     this.error = '';
-    const cpf = this.form.value.cpf as string;
+    const cpf = (this.form.get('cpf')!.value || '') as string;
     if (!validateCPF(cpf)) {
       this.error = 'CPF inválido';
       return;
     }
 
-    const payload = {
-      rg_civil: this.form.value.rg_civil || '',
-      rg_militar: this.form.value.rg_militar || '',
-      cpf: this.form.value.cpf || '',
-      data_nascimento: this.form.value.data_nascimento || '',
-      matricula: this.form.value.matricula || ''
+    const payload: Policial = {
+      rg_civil: String(this.form.get('rg_civil')!.value || '').trim(),
+      rg_militar: String(this.form.get('rg_militar')!.value || '').trim(),
+      cpf: String(this.form.get('cpf')!.value || '').replace(/\D/g, ''),
+      data_nascimento: String(this.form.get('data_nascimento')!.value || '').trim(),
+      matricula: String(this.form.get('matricula')!.value || '').trim()
     };
 
     this.service.cadastrarPolicial(payload).subscribe({
-      next: () => (this.message = 'Policial cadastrado com sucesso'),
+      next: () => {
+        this.message = 'Policial cadastrado com sucesso';
+        this.form.reset();
+      },
       error: (err) => (this.error = err?.error?.message || 'Erro ao cadastrar')
     });
   }

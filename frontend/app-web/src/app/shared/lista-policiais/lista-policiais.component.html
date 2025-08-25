@@ -34,3 +34,10 @@
 
 	<div *ngIf="!policiais?.length" style="margin-top:12px">Nenhum policial encontrado.</div>
 </div>
+
+<!-- Modal de edição local -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="onCancel()">
+	<div class="modal" (click)="$event.stopPropagation()">
+		<app-cadpoliciais [initial]="editing" (saved)="onSaved($event)"></app-cadpoliciais>
+	</div>
+</div>

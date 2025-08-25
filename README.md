@@ -3,46 +3,32 @@
 > Aplicação de exemplo para cadastro e listagem de policiais.
 
 ![status-build](https://img.shields.io/badge/build-pendente-lightgrey)
-![license](https://img.shields.io/badge/license-ISC-blue)
+# CRUD Policiais
 
-Descrição
----------
-Projeto fullstack (backend Node/Express + frontend Angular) criado para avaliação. Permite cadastrar policiais com campos sensíveis (matrícula é cifrada) e listar os registros. O frontend usa componentes standalone e um modal para cadastro; o backend valida CPF, criptografa matrícula e armazena em MySQL.
+Aplicação de exemplo fullstack para cadastro e listagem de policiais.
 
-Stack
------
-- Backend: Node.js, Express, mysql2, Sequelize (config mínima), dotenv
-- Frontend: Angular (standalone components), HttpClient, ngx-mask para máscara de CPF
-- Banco: MySQL (schema em `backend/banco.sql`)
+Status: em desenvolvimento
 
-Principais funcionalidades
--------------------------
-- Cadastro de policial: campos RG civil, RG militar, CPF, data de nascimento, matrícula
+Tecnologias
+- Backend: Node.js + Express, mysql2, dotenv
+- Frontend: Angular (standalone components), HttpClient, ngx-mask
+- Banco: MySQL (script em `backend/banco.sql`)
+
+O que o projeto faz
+- Cadastro de policiais (rg_civil, rg_militar, cpf, data_nascimento, matricula)
 - Validação de CPF (frontend + backend)
-- Máscara de CPF no formulário (formato 000.000.000-00)
-- Criptografia AES-256-CBC da matrícula (campo armazenado em VARBINARY)
-- Listagem de policiais (GET) com descriptografia da matrícula (quando possível)
-- Layout responsivo simples, modal para cadastro, feedback de sucesso/erro
+- Máscara de CPF no formulário (000.000.000-00)
+- Criptografia AES-256-CBC da matrícula (armazenada em VARBINARY)
+- Listagem, edição (PUT) e remoção (DELETE) de registros via API
 
-Estrutura do repositório (resumo)
----------------------------------
-- backend/
-  - server.js — servidor Express
-  - routes/policiais.js — rotas /api/policiais
-  - controllers/policiaisController.js — lógica de create/list, criptografia
-  - db.js — pool MySQL usando mysql2
-  - banco.sql — script SQL para criar tabela(s)
-  - .env (exemplo em `.env.example`)
-- frontend/app-web/
-  - src/app/shared/cadpoliciais — componente de cadastro (standalone)
-  - src/app/shared/lista-policiais — componente de listagem (standalone)
-  - src/app/shared/services/policiais.service.ts — serviço HttpClient
-  - uso de `ngx-mask` para máscara CPF
+Estrutura resumida
+- backend/: servidor, rotas, controllers, script SQL
+- frontend/app-web/: aplicação Angular (componentes em `src/app/shared`)
 
-Variáveis de ambiente (backend)
--------------------------------
-Crie um arquivo `.env` na pasta `backend/` com as seguintes chaves (exemplo no `.env.example`):
+Configuração do ambiente
+1. Copie o arquivo `.env.example` para `backend/.env` e ajuste as variáveis (DB_*, MATRICULA_SECRET, PORT).
 
+Exemplo (.env):
 ```
 DB_HOST=localhost
 DB_USER=root
@@ -53,103 +39,74 @@ MATRICULA_SECRET=chaveSecreta123
 PORT=3049
 ```
 
-Observação de segurança: `MATRICULA_SECRET` é usada para derivar a chave AES-256. Se ela for alterada após dados terem sido gravados, registros antigos não poderão ser descriptografados (erro `bad decrypt`). Para produção, use um IV aleatório por registro em vez de um IV fixo.
+Importante: `MATRICULA_SECRET` é usada para derivar a chave AES. Se for alterada após ter gravado dados, a descriptografia poderá falhar (`ERR_OSSL_BAD_DECRYPT`). Em produção, implemente IV aleatório por registro.
 
-Como preparar o banco
----------------------
-1. Instale o MySQL e crie o usuário/DB conforme `.env`.
-2. Execute o script SQL:
-
-```powershell
-mysql -u <user> -p < database_name > < backend/banco.sql
-```
-
-ou
+Preparar o banco
+1. Crie o banco/usuário conforme `.env`.
+2. Execute o script SQL (PowerShell):
 
 ```powershell
 mysql -u root -p seguranca < backend/banco.sql
 ```
 
-Como rodar o backend (Windows PowerShell)
-----------------------------------------
-1. Instale dependências:
+Rodando o backend
+1. Instale dependências e inicie (PowerShell):
 
 ```powershell
-cd c:\Users\anne_\Desktop\Exercicios\avaliacaoDSI\backend
+cd backend
 npm install
+npm start
+# servidor padrão: http://localhost:3049
 ```
 
-2. Inicie o servidor:
+Rodando o frontend
+1. Instale dependências e rode o dev server (PowerShell):
 
 ```powershell
+cd frontend\app-web
+npm install
 npm start
-# servidor deve aparecer em: http://localhost:3049
+# frontend padrão: http://localhost:4200
 ```
 
-Endpoints principais
---------------------
-- GET  /api/policiais — lista policiais (opcional ?cpf=... ou ?rg=...)
-- POST /api/policiais — cadastra policial
+API principais
+- GET  /api/policiais — lista todos (opcional: ?cpf=... ou ?rg=...)
+- POST /api/policiais — cria um policial
+- PUT  /api/policiais/:id — atualiza um policial
+- DELETE /api/policiais/:id — remove um policial
 
-Payload exemplo (POST /api/policiais):
-
+Payload exemplo (POST/PUT):
 ```json
 {
-  "rg_civil": "12.345.678-9",
-  "rg_militar": "123456",
+  "rg_civil": "123456789",
+  "rg_militar": "987654321",
   "cpf": "12345678909",
-  "data_nascimento": "1980-10-26",
+  "data_nascimento": "1990-05-20",
   "matricula": "ABC123"
 }
 ```
 
-Observações técnicas
---------------------
-- CPF: validado tanto no frontend quanto no backend (função `validateCPF`). A função aceita strings com máscara ou sem máscara (remove caracteres não numéricos internamente).
-- Máscara: o frontend usa `ngx-mask` para formatar o input de CPF no padrão `000.000.000-00`.
-- Criptografia: AES-256-CBC com chave derivada de `MATRICULA_SECRET`. Atualmente o IV é fixo (Buffer.alloc(16,0)). Para produção recomendamos usar IV aleatório por registro e armazená-lo junto com o ciphertext.
-- Problema conhecido: se `MATRICULA_SECRET` for alterada depois de registros gravados, a descriptografia falhará com `ERR_OSSL_BAD_DECRYPT`. O projeto já trata isso nas listagens (registros com falha retornam matrícula `null` e erro logado).
+Notas rápidas sobre o frontend
+- O componente de cadastro (`CadpoliciaisComponent`) é usado tanto para criar quanto para editar (quando recebe `initial` via input).
+- A listagem (`ListaPoliciaisComponent`) usa a pipe `cpfFormat` para exibir CPF como `000.000.000-00`.
+- O CPF é limpo (apenas dígitos) antes de ser enviado ao backend.
 
-Frontend — como rodar (PowerShell)
----------------------------------
-1. Instale dependências e rode dev server:
+Observações de segurança
+- Atualmente a criptografia usa IV fixo (implementação simples). Para produção, gere um IV aleatório por registro e armazene-o junto ao ciphertext.
+- Se precisar migrar dados criptografados quando mudar a estratégia de IV/chave, implemente um script de migração que faça decrypt com a chave antiga e re-encrypt com a nova estratégia.
 
-```powershell
-cd c:\Users\anne_\Desktop\Exercicios\avaliacaoDSI\frontend\app-web
-npm install
-npm start
-# abre em http://localhost:4200
-```
+Diagnóstico e dicas
+- Se `DELETE` ou `PUT` retornarem 404, verifique se o backend foi reiniciado após alterações de rota.
+- Erro `bad decrypt`: verifique `MATRICULA_SECRET` e se foi alterada após gravação dos dados.
+- Problemas de conexão com banco: verifique `DB_*` e se o MySQL está ativo e aceitando conexões.
 
-Observações do frontend
-----------------------
-- O frontend comunica com o backend via `src/app/shared/services/policiais.service.ts` configurado para `http://localhost:3049/api`.
-- O formulário de cadastro está disponível como modal (botão "Cadastrar Policial" abre modal). O CPF possui máscara.
-- A listagem formata `data_nascimento` como `yyyy-MM-dd`.
+Próximos passos recomendados
+- Implementar IV aleatório por registro e migração de dados.
+- Adicionar testes automatizados (unit / e2e).
+- Melhorar feedback do frontend (toasts) e controles de validação mais explícitos.
 
-Melhorias recomendadas / próximos passos
---------------------------------------
-- Trocar IV fixo por IV aleatório por registro e armazenar IV com o ciphertext.
-- Adicionar testes automatizados (unit + e2e) para endpoints e componentes.
-- Melhor controle de erros no frontend (toasts) e feedbacks por campo.
-- Paginação e filtros na listagem (por CPF/RG).
-
-Diagnóstico rápido de problemas comuns
--------------------------------------
-- Erro bad decrypt: verifique `MATRICULA_SECRET` no `.env` e se foi alterada após gravação dos dados.
-- Erro de conexão com banco: verifique `DB_HOST`, `DB_USER`, `DB_PASS` e se o MySQL está acessível.
-
-Contribuição
-------------
-Pull requests são bem-vindos. Para contribuições maiores, abra uma issue descrevendo a mudança.
+Contribuindo
+- Pull requests são bem-vindos. Para mudanças grandes, abra uma issue primeiro.
 
 Licença
--------
-ISC
-
----
-Se quiser, eu posso:
-- adicionar scripts de migração para recriptografar matrículas com IV aleatório,
-- fechar o modal automaticamente após cadastro bem-sucedido, e
-- remover caracteres especiais do CPF antes de enviar (já há limpeza no backend).
-# crud-policiais
+- ISC

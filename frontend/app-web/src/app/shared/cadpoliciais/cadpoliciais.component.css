@@ -1,3 +1,11 @@
 input.ng-invalid.ng-touched{border-color:#e11d48}
 .field-error{color:#e11d48; font-size:0.85rem; margin-top:4px}
 
+/* Formulário responsivo: duas colunas em desktop */
+@media (min-width: 800px) {
+	form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px }
+	form > div { margin-bottom: 0 }
+	.card form { padding: 8px }
+	.card form .full { grid-column: 1 / -1 }
+}
+

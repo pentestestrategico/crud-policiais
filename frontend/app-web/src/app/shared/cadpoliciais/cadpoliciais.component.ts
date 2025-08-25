@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PoliciaisService, Policial } from '../services/policiais.service';
@@ -12,6 +12,8 @@ import { validateCPF } from '../utils/validate-cpf';
   styleUrls: ['./cadpoliciais.component.css']
 })
 export class CadpoliciaisComponent {
+  @Input() initial?: Policial | null;
+  @Output() saved = new EventEmitter<Policial>();
   private fb = inject(FormBuilder);
   private service = inject(PoliciaisService);
 
@@ -25,6 +27,18 @@ export class CadpoliciaisComponent {
 
   message = '';
   error = '';
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['initial'] && this.initial) {
+      this.form.patchValue({
+        rg_civil: this.initial.rg_civil || '',
+        rg_militar: this.initial.rg_militar || '',
+        cpf: this.initial.cpf || '',
+        data_nascimento: this.initial.data_nascimento ? String(this.initial.data_nascimento).slice(0,10) : '',
+        matricula: this.initial.matricula || ''
+      });
+    }
+  }
 
   submit() {
     this.message = '';
@@ -43,12 +57,24 @@ export class CadpoliciaisComponent {
       matricula: String(this.form.get('matricula')!.value || '').trim()
     };
 
-    this.service.cadastrarPolicial(payload).subscribe({
-      next: () => {
-        this.message = 'Policial cadastrado com sucesso';
-        this.form.reset();
-      },
-      error: (err) => (this.error = err?.error?.message || 'Erro ao cadastrar')
-    });
+    // Se temos initial.id, atualizamos; caso contrário, cadastramos
+    if (this.initial && this.initial.id) {
+      this.service.updatePolicial(this.initial.id, payload).subscribe({
+        next: () => {
+          this.message = 'Policial atualizado com sucesso';
+          this.saved.emit({ ...payload, id: this.initial!.id });
+        },
+        error: (err) => (this.error = err?.error?.message || 'Erro ao atualizar')
+      });
+    } else {
+      this.service.cadastrarPolicial(payload).subscribe({
+        next: () => {
+          this.message = 'Policial cadastrado com sucesso';
+          this.form.reset();
+          this.saved.emit(payload);
+        },
+        error: (err) => (this.error = err?.error?.message || 'Erro ao cadastrar')
+      });
+    }
   }
 }

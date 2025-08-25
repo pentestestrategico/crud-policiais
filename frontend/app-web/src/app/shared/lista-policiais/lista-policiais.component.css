@@ -1,0 +1,47 @@
+/* Estilo de linhas alternadas suaves para a tabela */
+.card table {
+	width: 100%;
+	border-collapse: collapse;
+}
+.card thead th {
+	text-align: left;
+	padding: 10px 12px;
+	background: transparent;
+	color: #0f172a;
+}
+.card tbody td {
+	padding: 12px;
+	border-top: 1px solid rgba(2,6,23,0.06);
+}
+
+/* Centralizar conteúdo das células */
+.card thead th,
+.card tbody td {
+	text-align: center;
+}
+
+/* Linhas alternadas com tonalidades suaves */
+.card tbody tr:nth-child(odd) {
+	background: linear-gradient(90deg, rgba(249,250,251,0.8), rgba(255,255,255,0.8));
+}
+.card tbody tr:nth-child(even) {
+	background: linear-gradient(90deg, rgba(243,244,246,0.8), rgba(249,250,251,0.8));
+}
+
+/* Hover sutil */
+.card tbody tr:hover {
+	background: linear-gradient(90deg, rgba(236,239,245,0.95), rgba(249,250,251,0.95));
+}
+
+@media (max-width: 640px) {
+	.card tbody td {
+		padding: 8px 6px;
+	}
+}
+
+/* Em telas médias para grandes, limite de largura do modal interno e itens alinhados */
+@media (min-width: 800px){
+	.modal{max-width:720px}
+	.card table td:first-child{padding-left:16px}
+}
+

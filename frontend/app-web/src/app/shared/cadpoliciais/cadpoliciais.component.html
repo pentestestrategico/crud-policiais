@@ -28,7 +28,8 @@
 	</div>
 
 			<div style="margin-top:8px">
-				<button type="submit" [disabled]="form.invalid">Cadastrar</button>
+				<button type="submit" [disabled]="form.invalid">{{ initial?.id ? 'Salvar' : 'Cadastrar' }}</button>
+				<button type="button" style="margin-left:8px" (click)="form.reset(); message=''; error='';">Cancelar</button>
 			</div>
 		</form>
 

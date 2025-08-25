@@ -100,16 +100,9 @@ Diagnóstico e dicas
 - Erro `bad decrypt`: verifique `MATRICULA_SECRET` e se foi alterada após gravação dos dados.
 - Problemas de conexão com banco: verifique `DB_*` e se o MySQL está ativo e aceitando conexões.
 
-Próximos passos recomendados
-- Implementar IV aleatório por registro e migração de dados.
-- Adicionar testes automatizados (unit / e2e).
-- Melhorar feedback do frontend (toasts) e controles de validação mais explícitos.
-
 Contribuindo
 - Pull requests são bem-vindos. Para mudanças grandes, abra uma issue primeiro.
 
-Licença
-- ISC
 
 Imagens
 ------
